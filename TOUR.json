@@ -1,0 +1,1 @@
+{"steps":[{"screenshot":"01-cover.jpg"},{"keys":["E"],"screenshot":"02-play.png","wait_ms":1500},{"call":{"fn":"runOhioStorm","module":"ServerScriptService.Server.EventService","on":"Server"},"screenshot":"03-event.png","wait_ms":3000}],"tour":1}

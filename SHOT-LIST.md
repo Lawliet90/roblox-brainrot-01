@@ -1,0 +1,42 @@
+# SHOT-LIST.md — Steal a Sigma: screenshots to capture in Roblox Studio
+
+`01-cover.jpg` is DONE (composed thumbnail art of this game's own world and
+characters, 1280x720, 217 KiB). It is also the image to upload as the
+experience's first thumbnail on the Creator Dashboard.
+
+The two remaining shots MUST be real captures of the game running in Studio —
+do not use the starter's screenshots (deleted) or any other project's art.
+Keep the HUD clear of the top-left corner (Roblox menu buttons sit there)
+and capture while the game is running (Play, not Edit).
+
+## Shot 2 — `screenshots/02-play.png` — conveyor close-up, buying a brainrot
+
+1. Open `game.rbxl` in Roblox Studio, press Play (F5).
+2. Walk your character to the conveyor (centre of the arena, neon chevrons).
+3. Wait until a brainrot is walking past you — the green BUY prompt appears
+   at the bottom of the screen with its name, rarity and $/sec.
+4. Screenshot with the brainrot, its floating name/rarity/$/sec label, the
+   BUY prompt and the top bar (Rizz / Aura / Braincells) all visible.
+5. Save as `screenshots/02-play.png`, 1280x720. If over 256 KiB, re-encode
+   as JPEG quality ~80 or scale down (long side max 1280, short side min 480).
+
+## Shot 3 — `screenshots/03-event.png` — base plot earning + event banner mid-Ohio-Storm
+
+1. In Studio Play mode, buy at least one brainrot (press E at the conveyor)
+   so your base plot shows a brainrot on a pad with a floating income popup.
+2. Trigger the storm: in the Command Bar run
+   `require(game.ServerScriptService.Server.EventService).runOhioStorm()`
+   (or just wait ~90s for a random event — Fanum Tax or Boss raid also works).
+3. Screenshot the moment the red "🌪️ OHIO STORM!" banner is up, the
+   tornado is visible over the arena, and your base plot with its brainrot
+   is in frame.
+4. Save as `screenshots/03-event.png`, 1280x720, under 256 KiB (see step 5
+   above if needed).
+
+## After capturing
+
+- Re-run `rojo build` only if you edited the place in Studio (do NOT
+  overwrite `game.rbxl` with a Studio save — rebuild from Rojo, or run
+  `rojo syncback` to pull Studio edits into `src/` first).
+- Re-run `mkdir -p out && MAKEFUN_OUTPUT_DIR=out node main.ts`, then the
+  kit check, commit and push.
