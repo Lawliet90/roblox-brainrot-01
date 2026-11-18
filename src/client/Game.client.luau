@@ -5,14 +5,12 @@ local Players = game:GetService("Players")
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local TweenService = game:GetService("TweenService")
 local ContextActionService = game:GetService("ContextActionService")
-local UserInputService = game:GetService("UserInputService")
 
 local player = Players.LocalPlayer
 local playerGui = player:WaitForChild("PlayerGui")
 local remotes = ReplicatedStorage:WaitForChild("Remotes", 10)
 local BrainrotData = require(ReplicatedStorage.Shared.BrainrotData)
 local RarityData = require(ReplicatedStorage.Shared.RarityData)
-local Config = require(ReplicatedStorage.Shared.Config)
 
 local gui = Instance.new("ScreenGui")
 gui.Name = "SigmaGui"
@@ -20,15 +18,36 @@ gui.ResetOnSpawn = false
 gui.IgnoreGuiInset = true
 gui.Parent = playerGui
 
+-- Responsive sizing: every panel widths itself in Scale (a fraction of the
+-- viewport) with a UISizeConstraint min/max cap, so nothing is sized in
+-- hardcoded pixels and nothing can run off-screen or overlap at any
+-- resolution, from a narrow ~1000px Studio viewport up to fullscreen.
+local function capSize(obj, minW, maxW, minH, maxH)
+	local c = Instance.new("UISizeConstraint")
+	c.MinSize = Vector2.new(minW, minH)
+	c.MaxSize = Vector2.new(maxW, maxH)
+	c.Parent = obj
+end
+
+-- Same idea for text: TextScaled fits the label, UITextSizeConstraint keeps
+-- it from blowing up on wide screens.
+local function capText(label, maxTextSize)
+	label.TextScaled = true
+	local c = Instance.new("UITextSizeConstraint")
+	c.MaxTextSize = maxTextSize
+	c.Parent = label
+end
+
 -- Top bar: Rizz, Aura, Braincells. Pinned top-LEFT below the Roblox menu
--- buttons (Y=48 clears them) and ending at x=572 on a ~1050px viewport,
--- so it can never reach the top-right leaderboard; Y=48..92 stays clear
--- of the event banner at Y=104.
+-- buttons (Y=48 clears them); 0.5 scale capped at 560 wide ends at x=572
+-- on a ~1050px viewport, so it can never reach the top-right leaderboard;
+-- Y=48..92 stays clear of the event banner at Y=104.
 local topBar = Instance.new("Frame")
 topBar.Name = "TopBar"
 topBar.AnchorPoint = Vector2.new(0, 0)
 topBar.Position = UDim2.new(0, 12, 0, 48)
-topBar.Size = UDim2.fromOffset(560, 44)
+topBar.Size = UDim2.new(0.5, 0, 0, 44)
+capSize(topBar, 420, 560, 44, 44)
 topBar.BackgroundColor3 = Color3.fromRGB(20, 20, 30)
 topBar.BackgroundTransparency = 0.2
 topBar.BorderSizePixel = 0
@@ -37,23 +56,24 @@ local topCorner = Instance.new("UICorner")
 topCorner.CornerRadius = UDim.new(0, 12)
 topCorner.Parent = topBar
 
-local function makeStatLabel(name, text, x)
+local function makeStatLabel(name, text, xScale)
 	local label = Instance.new("TextLabel")
 	label.Name = name
-	label.Position = UDim2.new(0, x, 0, 0)
-	label.Size = UDim2.fromOffset(180, 44)
+	label.Position = UDim2.new(xScale, 0, 0, 0)
+	label.Size = UDim2.new(1 / 3, 0, 1, 0)
 	label.BackgroundTransparency = 1
 	label.Text = text
 	label.TextColor3 = Color3.fromRGB(255, 255, 255)
 	label.TextSize = 20
 	label.Font = Enum.Font.GothamBold
+	capText(label, 20)
 	label.Parent = topBar
 	return label
 end
 
-local rizzLabel = makeStatLabel("RizzLabel", "💰 Rizz: 100", 8)
-local auraLabel = makeStatLabel("AuraLabel", "✨ Aura: 0", 190)
-local cellsLabel = makeStatLabel("CellsLabel", "🧠 Braincells: 100", 372)
+local rizzLabel = makeStatLabel("RizzLabel", "💰 Rizz: 100", 0)
+local auraLabel = makeStatLabel("AuraLabel", "✨ Aura: 0", 1 / 3)
+local cellsLabel = makeStatLabel("CellsLabel", "🧠 Braincells: 100", 2 / 3)
 
 local function refreshLeaderstats()
 	local leaderstats = player:FindFirstChild("leaderstats")
@@ -79,19 +99,22 @@ player.ChildAdded:Connect(function(child)
 end)
 task.delay(2, refreshLeaderstats)
 
--- Event banner, centre-top under the top bar. 620 wide so on a ~1050px
--- viewport it spans x=215..835 and stays clear of the top-right leaderboard.
+-- Event banner, centre-top under the top bar. 0.6 scale capped at 620 wide
+-- so on a ~1050px viewport it spans x=215..835 and stays clear of the
+-- top-right leaderboard.
 local banner = Instance.new("TextLabel")
 banner.Name = "EventBanner"
 banner.AnchorPoint = Vector2.new(0.5, 0)
 banner.Position = UDim2.new(0.5, 0, 0, 104)
-banner.Size = UDim2.fromOffset(620, 48)
+banner.Size = UDim2.new(0.6, 0, 0, 48)
+capSize(banner, 380, 620, 48, 48)
 banner.BackgroundColor3 = Color3.fromRGB(20, 20, 30)
 banner.BackgroundTransparency = 0.2
 banner.Text = "🧠 STEAL A SIGMA — buy a brainrot off the conveyor!"
 banner.TextColor3 = Color3.fromRGB(255, 215, 0)
 banner.TextSize = 22
 banner.Font = Enum.Font.GothamBold
+capText(banner, 22)
 banner.TextStrokeTransparency = 0.3
 banner.Parent = gui
 local bannerCorner = Instance.new("UICorner")
@@ -112,17 +135,20 @@ end
 -- Floating income popups, rising from the bottom-right.
 local function showPopup(text, color)
 	local popup = Instance.new("TextLabel")
-	popup.Size = UDim2.fromOffset(320, 36)
-	popup.Position = UDim2.new(1, -340, 1, -120)
+	popup.AnchorPoint = Vector2.new(1, 0)
+	popup.Size = UDim2.new(0.3, 0, 0, 36)
+	capSize(popup, 240, 320, 36, 36)
+	popup.Position = UDim2.new(1, -20, 1, -120)
 	popup.BackgroundTransparency = 1
 	popup.Text = text
 	popup.TextColor3 = color or Color3.fromRGB(255, 220, 80)
 	popup.TextSize = 24
 	popup.Font = Enum.Font.GothamBold
+	capText(popup, 24)
 	popup.TextStrokeTransparency = 0.2
 	popup.Parent = gui
 	local rise = TweenService:Create(popup, TweenInfo.new(1.6, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), {
-		Position = UDim2.new(1, -340, 1, -220),
+		Position = UDim2.new(1, -20, 1, -220),
 		TextTransparency = 1,
 	})
 	rise:Play()
@@ -145,12 +171,14 @@ local buyPrompt = Instance.new("TextButton")
 buyPrompt.Name = "BuyPrompt"
 buyPrompt.AnchorPoint = Vector2.new(0.5, 1)
 buyPrompt.Position = UDim2.new(0.5, 0, 1, -140)
-buyPrompt.Size = UDim2.fromOffset(420, 56)
+buyPrompt.Size = UDim2.new(0.4, 0, 0, 56)
+capSize(buyPrompt, 300, 420, 56, 56)
 buyPrompt.BackgroundColor3 = Color3.fromRGB(0, 180, 80)
 buyPrompt.Text = "BUY"
 buyPrompt.TextColor3 = Color3.fromRGB(255, 255, 255)
 buyPrompt.TextSize = 24
 buyPrompt.Font = Enum.Font.GothamBold
+capText(buyPrompt, 24)
 buyPrompt.Visible = false
 buyPrompt.Parent = gui
 local buyCorner = Instance.new("UICorner")
@@ -229,7 +257,8 @@ local indexPanel = Instance.new("ScrollingFrame")
 indexPanel.Name = "BrainrotIndex"
 indexPanel.AnchorPoint = Vector2.new(1, 0.5)
 indexPanel.Position = UDim2.new(1, -16, 0.5, 0)
-indexPanel.Size = UDim2.fromOffset(340, 420)
+indexPanel.Size = UDim2.new(0.32, 0, 0.6, 0)
+capSize(indexPanel, 280, 340, 320, 460)
 indexPanel.BackgroundColor3 = Color3.fromRGB(20, 20, 30)
 indexPanel.BackgroundTransparency = 0.1
 indexPanel.Visible = false
@@ -241,6 +270,7 @@ indexTitle.Text = "📖 BRAINROT INDEX — press I"
 indexTitle.TextColor3 = Color3.fromRGB(255, 255, 255)
 indexTitle.TextSize = 18
 indexTitle.Font = Enum.Font.GothamBold
+capText(indexTitle, 18)
 indexTitle.Parent = indexPanel
 local y = 40
 for _, def in ipairs(BrainrotData.CAST) do
@@ -252,6 +282,7 @@ for _, def in ipairs(BrainrotData.CAST) do
 	row.TextColor3 = RarityData.getColor(def.rarity)
 	row.TextSize = 15
 	row.Font = Enum.Font.GothamBold
+	capText(row, 15)
 	row.TextXAlignment = Enum.TextXAlignment.Left
 	row.Parent = indexPanel
 	y += 32
@@ -271,12 +302,14 @@ ContextActionService:BindAction("SigmaIndex", toggleIndex, false, Enum.KeyCode.I
 local rebirthButton = Instance.new("TextButton")
 rebirthButton.Name = "RebirthButton"
 rebirthButton.Position = UDim2.new(0, 16, 1, -120)
-rebirthButton.Size = UDim2.fromOffset(180, 48)
+rebirthButton.Size = UDim2.new(0.17, 0, 0, 48)
+capSize(rebirthButton, 140, 180, 48, 48)
 rebirthButton.BackgroundColor3 = Color3.fromRGB(160, 40, 220)
 rebirthButton.Text = "🔄 REBIRTH"
 rebirthButton.TextColor3 = Color3.fromRGB(255, 255, 255)
 rebirthButton.TextSize = 20
 rebirthButton.Font = Enum.Font.GothamBold
+capText(rebirthButton, 20)
 rebirthButton.Parent = gui
 rebirthButton.MouseButton1Click:Connect(function()
 	local rebirth = remotes:FindFirstChild("Rebirth")
@@ -288,12 +321,14 @@ end)
 local lockButton = Instance.new("TextButton")
 lockButton.Name = "LockButton"
 lockButton.Position = UDim2.new(0, 16, 1, -64)
-lockButton.Size = UDim2.fromOffset(180, 48)
+lockButton.Size = UDim2.new(0.17, 0, 0, 48)
+capSize(lockButton, 140, 180, 48, 48)
 lockButton.BackgroundColor3 = Color3.fromRGB(40, 120, 220)
 lockButton.Text = "🔒 LOCK BASE ($500)"
 lockButton.TextColor3 = Color3.fromRGB(255, 255, 255)
 lockButton.TextSize = 18
 lockButton.Font = Enum.Font.GothamBold
+capText(lockButton, 18)
 lockButton.Parent = gui
 lockButton.MouseButton1Click:Connect(function()
 	local lock = remotes:FindFirstChild("BuyLock")
@@ -307,12 +342,14 @@ local hint = Instance.new("TextLabel")
 hint.Name = "HintBar"
 hint.AnchorPoint = Vector2.new(0.5, 1)
 hint.Position = UDim2.new(0.5, 0, 1, -16)
-hint.Size = UDim2.fromOffset(560, 28)
+hint.Size = UDim2.new(0.55, 0, 0, 28)
+capSize(hint, 360, 560, 28, 28)
 hint.BackgroundTransparency = 1
 hint.Text = "E = buy / steal   •   Click a player to SLAP   •   I = brainrot index   •   Hide in base during Fanum Tax!"
 hint.TextColor3 = Color3.fromRGB(220, 220, 220)
 hint.TextSize = 15
 hint.Font = Enum.Font.GothamBold
+capText(hint, 15)
 hint.TextStrokeTransparency = 0.3
 hint.Parent = gui
 
