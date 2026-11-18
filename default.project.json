@@ -47,9 +47,9 @@
           "$className": "Part",
           "$properties": {
             "Anchored": true,
-            "Color": [0.12, 0.11, 0.16],
+            "Color": [0.35, 0.75, 0.3],
             "Locked": true,
-            "Material": "SmoothPlastic",
+            "Material": "Grass",
             "Position": [0, -10, 0],
             "Size": [512, 20, 512]
           }
@@ -70,7 +70,7 @@
           "$className": "Part",
           "$properties": {
             "Anchored": true,
-            "Color": [0.1, 0.1, 0.12],
+            "Color": [0.45, 0.45, 0.5],
             "Material": "SmoothPlastic",
             "Position": [0, 0.5, 0],
             "Size": [124, 1, 8]
@@ -141,12 +141,12 @@
             "Transparency": 1
           }
         },
-        "Pole1": { "$className": "Part", "$properties": { "Anchored": true, "Color": [0.2, 0.2, 0.25], "Position": [-50, 4, 8], "Size": [1, 8, 1] } },
-        "Pole2": { "$className": "Part", "$properties": { "Anchored": true, "Color": [0.2, 0.2, 0.25], "Position": [-30, 4, 8], "Size": [1, 8, 1] } },
-        "Pole3": { "$className": "Part", "$properties": { "Anchored": true, "Color": [0.2, 0.2, 0.25], "Position": [-10, 4, 8], "Size": [1, 8, 1] } },
-        "Pole4": { "$className": "Part", "$properties": { "Anchored": true, "Color": [0.2, 0.2, 0.25], "Position": [10, 4, 8], "Size": [1, 8, 1] } },
-        "Pole5": { "$className": "Part", "$properties": { "Anchored": true, "Color": [0.2, 0.2, 0.25], "Position": [30, 4, 8], "Size": [1, 8, 1] } },
-        "Pole6": { "$className": "Part", "$properties": { "Anchored": true, "Color": [0.2, 0.2, 0.25], "Position": [50, 4, 8], "Size": [1, 8, 1] } },
+        "Pole1": { "$className": "Part", "$properties": { "Anchored": true, "Color": [0.5, 0.5, 0.55], "Position": [-50, 4, 8], "Size": [1, 8, 1] } },
+        "Pole2": { "$className": "Part", "$properties": { "Anchored": true, "Color": [0.5, 0.5, 0.55], "Position": [-30, 4, 8], "Size": [1, 8, 1] } },
+        "Pole3": { "$className": "Part", "$properties": { "Anchored": true, "Color": [0.5, 0.5, 0.55], "Position": [-10, 4, 8], "Size": [1, 8, 1] } },
+        "Pole4": { "$className": "Part", "$properties": { "Anchored": true, "Color": [0.5, 0.5, 0.55], "Position": [10, 4, 8], "Size": [1, 8, 1] } },
+        "Pole5": { "$className": "Part", "$properties": { "Anchored": true, "Color": [0.5, 0.5, 0.55], "Position": [30, 4, 8], "Size": [1, 8, 1] } },
+        "Pole6": { "$className": "Part", "$properties": { "Anchored": true, "Color": [0.5, 0.5, 0.55], "Position": [50, 4, 8], "Size": [1, 8, 1] } },
         "Light1": { "$className": "Part", "$properties": { "Anchored": true, "Color": [1, 0.9, 0.4], "Material": "Neon", "Position": [-50, 8.5, 8], "Size": [2, 1, 2] } },
         "Light2": { "$className": "Part", "$properties": { "Anchored": true, "Color": [1, 0.9, 0.4], "Material": "Neon", "Position": [-30, 8.5, 8], "Size": [2, 1, 2] } },
         "Light3": { "$className": "Part", "$properties": { "Anchored": true, "Color": [1, 0.9, 0.4], "Material": "Neon", "Position": [-10, 8.5, 8], "Size": [2, 1, 2] } },
@@ -157,22 +157,22 @@
     },
     "Lighting": {
       "$properties": {
-        "Ambient": [0.1, 0.08, 0.2],
-        "Brightness": 2,
+        "Ambient": [0.7, 0.7, 0.7],
+        "Brightness": 3,
         "ClockTime": 14,
         "GlobalShadows": true,
-        "OutdoorAmbient": [0.35, 0.3, 0.5],
+        "OutdoorAmbient": [0.75, 0.75, 0.8],
         "Technology": "Future"
       },
       "Atmosphere": {
         "$className": "Atmosphere",
         "$properties": {
-          "Density": 0.25,
+          "Density": 0.1,
           "Offset": 0.2,
-          "Color": [0.45, 0.25, 0.7],
-          "Decay": [0.6, 0.3, 0.9],
+          "Color": [0.6, 0.75, 1],
+          "Decay": [0.5, 0.5, 0.5],
           "Glare": 0.4,
-          "Haze": 1.5
+          "Haze": 0.5
         }
       },
       "Bloom": {
@@ -186,10 +186,10 @@
       "ColorCorrection": {
         "$className": "ColorCorrectionEffect",
         "$properties": {
-          "Brightness": 0.05,
-          "Contrast": 0.15,
-          "Saturation": 0.35,
-          "TintColor": [1, 0.96, 1]
+          "Brightness": 0.15,
+          "Contrast": 0,
+          "Saturation": 0.2,
+          "TintColor": [1, 1, 1]
         }
       },
       "SunRays": {

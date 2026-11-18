@@ -20,11 +20,14 @@ gui.ResetOnSpawn = false
 gui.IgnoreGuiInset = true
 gui.Parent = playerGui
 
--- Top bar: Rizz, Aura, Braincells. Kept clear of the top-left Roblox menu.
+-- Top bar: Rizz, Aura, Braincells. Pinned top-LEFT below the Roblox menu
+-- buttons (Y=48 clears them) and ending at x=572 on a ~1050px viewport,
+-- so it can never reach the top-right leaderboard; Y=48..92 stays clear
+-- of the event banner at Y=104.
 local topBar = Instance.new("Frame")
 topBar.Name = "TopBar"
-topBar.AnchorPoint = Vector2.new(0.5, 0)
-topBar.Position = UDim2.new(0.5, 0, 0, 48)
+topBar.AnchorPoint = Vector2.new(0, 0)
+topBar.Position = UDim2.new(0, 12, 0, 48)
 topBar.Size = UDim2.fromOffset(560, 44)
 topBar.BackgroundColor3 = Color3.fromRGB(20, 20, 30)
 topBar.BackgroundTransparency = 0.2
@@ -76,12 +79,13 @@ player.ChildAdded:Connect(function(child)
 end)
 task.delay(2, refreshLeaderstats)
 
--- Event banner, centre-top under the top bar.
+-- Event banner, centre-top under the top bar. 620 wide so on a ~1050px
+-- viewport it spans x=215..835 and stays clear of the top-right leaderboard.
 local banner = Instance.new("TextLabel")
 banner.Name = "EventBanner"
 banner.AnchorPoint = Vector2.new(0.5, 0)
 banner.Position = UDim2.new(0.5, 0, 0, 104)
-banner.Size = UDim2.fromOffset(720, 48)
+banner.Size = UDim2.fromOffset(620, 48)
 banner.BackgroundColor3 = Color3.fromRGB(20, 20, 30)
 banner.BackgroundTransparency = 0.2
 banner.Text = "🧠 STEAL A SIGMA — buy a brainrot off the conveyor!"
