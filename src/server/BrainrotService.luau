@@ -90,7 +90,7 @@ end
 function BrainrotService.attachLabel(model, def, mutation, income)
 	local gui = Instance.new("BillboardGui")
 	gui.Name = "BrainrotLabel"
-	gui.Size = UDim2.fromOffset(180, 64)
+	gui.Size = UDim2.fromOffset(120, 48)
 	gui.StudsOffset = Vector3.new(0, def.size * 1.4, 0)
 	gui.AlwaysOnTop = true
 	gui.Parent = model
